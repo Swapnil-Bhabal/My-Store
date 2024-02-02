@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
 
 const App = () => {
   return (
@@ -19,9 +20,9 @@ const App = () => {
       >
         <Routes>
           <Route path="/" element={<HomeScreen />} />
-        </Routes>
-        <Routes>
           <Route path="/product/:id" element={<ProductScreen />} />
+          <Route path="/cart/:id" element={<CartScreen />} />
+          <Route path="/cart" element={<CartScreen />} />
         </Routes>
       </Flex>
       <Footer />
