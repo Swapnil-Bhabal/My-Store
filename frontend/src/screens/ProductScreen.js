@@ -1,18 +1,28 @@
-import { Button, Flex, Grid, Heading, Image, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Grid,
+  Heading,
+  Image,
+  Select,
+  Text,
+} from "@chakra-ui/react";
 
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listProductDetails } from "../actions/productAction";
 
 const ProductScreen = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
   const { id } = params;
+  const [qty, setQty] = useState(1);
 
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
@@ -20,6 +30,10 @@ const ProductScreen = () => {
   useEffect(() => {
     dispatch(listProductDetails(id)); //api call
   }, [id, dispatch]);
+
+  const addToCartHandler = () => {
+    navigate(`/cart/${id}?qty=${qty}`);
+  };
 
   return (
     <>
@@ -60,7 +74,6 @@ const ProductScreen = () => {
 
             <Text>{product.description}</Text>
           </Flex>
-
           <Flex direction="column">
             <Flex justifyContent="space-between" py="2">
               <Text>Price: </Text>
@@ -72,6 +85,21 @@ const ProductScreen = () => {
                 {product.countInStock > 0 ? "In stock" : "Not available"}
               </Text>
             </Flex>
+            {/*short circuit kiva conditional rendering*/}
+            {product.countInStock > 0 && (
+              <Flex justifyContent="space-between" py="2">
+                <Text>Qty: </Text>
+                <Select
+                  value={qty}
+                  onChange={(e) => setQty(e.target.value)}
+                  width="30%"
+                >
+                  {[...Array(product.countInStock).keys()].map((i) => (
+                    <option key={i + 1}>{i + 1}</option>
+                  ))}
+                </Select>
+              </Flex>
+            )}
             <Button
               bg="gray.800"
               colorScheme="teal"
@@ -79,6 +107,7 @@ const ProductScreen = () => {
               textTransform="uppercase"
               letterSpacing="wide"
               isDisabled={product.countInStock === 0}
+              onClick={addToCartHandler}
             >
               Add to cart
             </Button>
