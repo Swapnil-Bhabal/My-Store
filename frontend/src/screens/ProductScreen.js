@@ -28,7 +28,7 @@ const ProductScreen = () => {
   const { loading, error, product } = productDetails;
 
   useEffect(() => {
-    dispatch(listProductDetails(id)); //api call
+    dispatch(listProductDetails(id));
   }, [id, dispatch]);
 
   const addToCartHandler = () => {
